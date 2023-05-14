@@ -50,6 +50,8 @@ pub(super) struct ConnectionOptions {
     client_flags: CapabilityFlags,
     ssl_mode: Option<mysql_ssl_mode>,
     ssl_ca: Option<CString>,
+    ssl_cert: Option<CString>,
+    ssl_key: Option<CString>,
 }
 
 impl ConnectionOptions {
@@ -78,6 +80,16 @@ impl ConnectionOptions {
         };
 
         let ssl_ca = match query_pairs.get("ssl_ca") {
+            Some(v) => Some(CString::new(v.as_bytes())?),
+            _ => None,
+        };
+
+        let ssl_cert = match query_pairs.get("ssl_cert") {
+            Some(v) => Some(CString::new(v.as_bytes())?),
+            _ => None,
+        };
+
+        let ssl_key = match query_pairs.get("ssl_key") {
             Some(v) => Some(CString::new(v.as_bytes())?),
             _ => None,
         };
@@ -130,6 +142,8 @@ impl ConnectionOptions {
             ssl_mode,
             unix_socket,
             ssl_ca,
+            ssl_cert,
+            ssl_key,
         })
     }
 
@@ -159,6 +173,14 @@ impl ConnectionOptions {
 
     pub(super) fn ssl_ca(&self) -> Option<&CStr> {
         self.ssl_ca.as_deref()
+    }
+
+    pub(super) fn ssl_cert(&self) -> Option<&CStr> {
+        self.ssl_cert.as_deref()
+    }
+
+    pub(super) fn ssl_key(&self) -> Option<&CStr> {
+        self.ssl_key.as_deref()
     }
 
     pub(super) fn client_flags(&self) -> CapabilityFlags {
