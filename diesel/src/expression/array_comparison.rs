@@ -110,6 +110,14 @@ where
     type SqlType = Bool;
 }
 
+impl<T, U> Expression for EqParensExpression<T, U>
+where
+    T: Expression,
+    U: Expression<SqlType = T::SqlType>,
+{
+    type SqlType = Bool;
+}
+
 impl<T, U> Expression for NotIn<T, U>
 where
     T: Expression,
@@ -181,6 +189,7 @@ where
 
 impl_selectable_expression!(In<T, U>);
 impl_selectable_expression!(NotIn<T, U>);
+impl_selectable_expression!(EqParensExpression<T, U>);
 
 /// This trait describes how a type is transformed to the
 /// `IN (values)` value expression
