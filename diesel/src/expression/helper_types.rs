@@ -1,7 +1,7 @@
 //! The types in this module are all shorthand for `PredicateType<Lhs,
 //! AsExpr<Rhs, Lhs>>`. Since we often need to return concrete types, instead of
 //! a boxed trait object, these can be useful for writing concise return types.
-use super::array_comparison::{AsInExpression, In, NotIn};
+use super::array_comparison::{AsInExpression, In, NotIn, EqParensExpression};
 use super::grouped::Grouped;
 use super::select_by::SelectBy;
 use super::{AsExpression, Expression};
@@ -27,6 +27,10 @@ pub type NotEq<Lhs, Rhs> = Grouped<super::operators::NotEq<Lhs, AsExpr<Rhs, Lhs>
 /// The return type of
 /// [`lhs.eq_any(rhs)`](crate::expression_methods::ExpressionMethods::eq_any())
 pub type EqAny<Lhs, Rhs> = Grouped<In<Lhs, <Rhs as AsInExpression<SqlTypeOf<Lhs>>>::InExpression>>;
+
+/// The return type of
+/// [`lhs.eq_parens(rhs)`](crate::expression_methods::ExpressionMethods::eq_parens())
+pub type EqParens<Lhs, Rhs> = Grouped<EqParensExpression<Lhs, <Rhs as AsExpression<SqlTypeOf<Lhs>>>::Expression>>;
 
 /// The return type of
 /// [`lhs.ne_all(rhs)`](crate::expression_methods::ExpressionMethods::ne_all())

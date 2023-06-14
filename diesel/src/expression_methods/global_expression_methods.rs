@@ -3,6 +3,7 @@ use crate::expression::array_comparison::{AsInExpression, In, NotIn};
 use crate::expression::grouped::Grouped;
 use crate::expression::operators::*;
 use crate::expression::{assume_not_null, nullable, AsExpression, Expression};
+use crate::internal::derives::multiconnection::array_comparison::EqParensExpression;
 use crate::sql_types::{SingleValue, SqlType};
 
 /// Methods present on all expressions, except tuples
@@ -74,6 +75,15 @@ pub trait ExpressionMethods: Expression + Sized {
         T: AsExpression<Self::SqlType>,
     {
         Grouped(Eq::new(self, other.as_expression()))
+    }
+
+    /// alkfjaljfk
+    fn eq_parens<T>(self, other: T) -> dsl::EqParens<Self, T>
+    where
+        Self::SqlType: SqlType,
+        T: AsExpression<Self::SqlType>,
+    {
+        Grouped(EqParensExpression::new(self, other.as_expression()))
     }
 
     /// Creates a SQL `!=` expression.

@@ -39,6 +39,37 @@ pub struct In<T, U> {
     pub values: U,
 }
 
+/// afafs
+#[derive(Debug, Copy, Clone, QueryId, ValidGrouping)]
+#[non_exhaustive]
+pub struct EqParensExpression<T, U> {
+    /// The expression on the left side of the `IN` keyword
+    pub left: T,
+    /// The values clause of the `IN` expression
+    pub values: U,
+}
+
+impl<T, U> EqParensExpression<T, U> {
+    pub(crate) fn new(left: T, values: U) -> Self {
+        Self { left, values }
+    }
+}
+
+impl<T, U, DB> QueryFragment<DB> for EqParensExpression<T, U>
+where
+    DB: Backend,
+    T: QueryFragment<DB>,
+    U: QueryFragment<DB>,
+{
+    fn walk_ast<'b>(&'b self, mut out: AstPass<'_, 'b, DB>) -> QueryResult<()> {
+        self.left.walk_ast(out.reborrow())?;
+        out.push_sql(" = (");
+        self.values.walk_ast(out.reborrow())?;
+        out.push_sql(")");
+        Ok(())
+    }
+}
+
 /// Query dsl node that represents a `left NOT IN (values)`
 /// expression
 ///
