@@ -225,6 +225,22 @@ where
     }
 }
 
+use crate::query_builder:: SelectStatement;
+use self::subselect::Subselect;
+
+impl<ST, F, S, D, W, O, LOf, G, H, LC> AsExpression<ST> for SelectStatement<F, S, D, W, O, LOf, G, H, LC>
+where
+    ST: SqlType + TypedExpressionType,
+    Subselect<Self, ST>: Expression<SqlType = ST>,
+    Self: crate::query_builder::SelectQuery<SqlType = ST>,
+{
+    type Expression = Subselect<Self, ST>;
+
+    fn as_expression(self) -> Self::Expression {
+        Subselect::new(self)
+    }
+}
+
 /// Converts a type to its representation for use in Diesel's query builder.
 ///
 /// This trait only exists to make usage of `AsExpression` more ergonomic when

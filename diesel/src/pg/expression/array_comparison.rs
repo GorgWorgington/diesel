@@ -151,18 +151,18 @@ where
     }
 }
 
-impl<ST, F, S, D, W, O, LOf, G, H, LC> AsArrayExpression<ST>
-    for SelectStatement<F, S, D, W, O, LOf, G, H, LC>
-where
-    ST: 'static,
-    Self: SelectQuery<SqlType = ST>,
-{
-    type Expression = Subselect<Self, Array<ST>>;
+// impl<ST, F, S, D, W, O, LOf, G, H, LC> AsArrayExpression<ST>
+//     for SelectStatement<F, S, D, W, O, LOf, G, H, LC>
+// where
+//     ST: 'static,
+//     Self: SelectQuery<SqlType = ST>,
+// {
+//     type Expression = Subselect<Self, Array<ST>>;
 
-    fn as_expression(self) -> Self::Expression {
-        Subselect::new(self)
-    }
-}
+//     fn as_expression(self) -> Self::Expression {
+//         Subselect::new(self)
+//     }
+// }
 
 impl<'a, ST, QS, DB, GB> AsArrayExpression<ST> for BoxedSelectStatement<'a, ST, QS, DB, GB>
 where
